@@ -1,0 +1,63 @@
+/*
+ * Design tokens. Two separately tuned themes:
+ *  - dark  : graphite + a single "signal" lime accent
+ *  - light : warm paper + ink, with a cobalt accent
+ */
+:root {
+  --font-sans: 'Inter Tight Variable', 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  --pad: clamp(1.25rem, 4vw, 4rem);
+  --maxw: 1520px;
+  --section: clamp(5rem, 10vw, 9rem);
+  --nav-h: 4.5rem;
+  --radius: 14px;
+  --radius-sm: 8px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --fs-mono: 0.75rem;
+  --fs-body: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --fs-lead: clamp(1.35rem, 1rem + 1.5vw, 2.25rem);
+  --fs-h2: clamp(2.5rem, 1.2rem + 5.6vw, 6.5rem);
+  --fs-h3: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem);
+}
+
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0a0b0d;
+  --bg-2: #0f1114;
+  --surface: #14171c;
+  --surface-2: #1b1f26;
+  --line: rgba(237, 236, 231, 0.1);
+  --line-strong: rgba(237, 236, 231, 0.24);
+  --text: #edece7;
+  --muted: #a09f98;
+  --accent: #c6f24e;
+  --accent-ink: #0a0b0d;
+  --accent-soft: rgba(198, 242, 78, 0.12);
+  --glow: radial-gradient(60% 60% at 50% 40%, rgba(198, 242, 78, 0.07), transparent 70%);
+  --shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8);
+  --nav-bg: rgba(10, 11, 13, 0.72);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f1eee6;
+  --bg-2: #e8e4d9;
+  --surface: #faf8f3;
+  --surface-2: #ffffff;
+  --line: rgba(21, 21, 15, 0.13);
+  --line-strong: rgba(21, 21, 15, 0.34);
+  --text: #15150f;
+  --muted: #5b5a52;
+  --accent: #2337e0;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(35, 55, 224, 0.09);
+  --glow: radial-gradient(60% 60% at 50% 40%, rgba(35, 55, 224, 0.06), transparent 70%);
+  --shadow: 0 30px 60px -30px rgba(60, 50, 20, 0.35), 0 2px 6px rgba(60, 50, 20, 0.06);
+  --nav-bg: rgba(241, 238, 230, 0.78);
+}
