@@ -1,5 +1,6 @@
 import { Award } from 'lucide-react'
 import type { CSSProperties } from 'react'
+import { sectionIndex } from '../data/sections'
 import { SectionHead, Split } from '../components/primitives'
 import { certifications, education } from '../data/education'
 
@@ -7,7 +8,7 @@ export function Education() {
   return (
     <section className="section edu" id="education" aria-labelledby="edu-title">
       <div className="container">
-        <SectionHead index="05" label="Education & certifications">
+        <SectionHead index={sectionIndex('education')} label="Education & certifications">
           <span id="edu-title">
             <Split text="Foundations," /> <span className="serif accent"><Split text="certified." offset={1} /></span>
           </span>

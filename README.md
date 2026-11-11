@@ -27,18 +27,21 @@ All content lives in `src/data/` — you should not need to touch components to 
 | `src/data/experience.ts` | Employment history and highlights |
 | `src/data/skills.ts` | Skill groups |
 | `src/data/education.ts` | Education and certifications |
-| `src/data/projects.ts` | Project case studies (one page each) |
+| `src/data/projects.ts` | Project case studies (one page each) — `group: 'work'` or `group: 'personal'` |
+| `src/data/sections.ts` | Home-page sections, their order and numbering (nav and hero read from it) |
 | `src/data/site.ts` | Site URL, base path, default SEO title and description |
 
 ### Things still to fill in
 
-- **LinkedIn URL** — `profile.ts` → `socials`. The link stays hidden while the URL is empty.
+- **FinTrack live link** — `projects.ts` → `liveUrl` on the `fintrack` entry. The card shows "Link coming soon" until then.
+- **Personal project tech stacks** — `projects.ts` → `stack` for KLOTHIQ, KICK CLASH and FinTrack. The stack block stays hidden while it is empty.
+- **KLOTHIQ features** — `projects.ts` → `features` currently lists only what is confirmed.
 - **Project live links / repositories** — `projects.ts` → `liveUrl`, `repoUrl`. Buttons activate automatically.
 - **Project screenshots** — put images in `public/projects/<slug>/` and list them under `screenshots` in `projects.ts`. The first one replaces the illustrated cover; the rest appear in a gallery.
 
 ### Adding a project
 
-Add an object to the `projects` array in `src/data/projects.ts`. The `slug` becomes the URL (`/projects/<slug>/`). The build generates the page, its metadata and the sitemap entry. To give it an illustrated cover before screenshots exist, set `visual` to `'erp'` or `'exam'` (or add a new schematic in `src/components/ProjectVisual.tsx`).
+Add an object to the `projects` array in `src/data/projects.ts`. Set `group: 'work'` to list it under **Work**, or `group: 'personal'` to list it under **Personal projects**. The `slug` becomes the URL (`/projects/<slug>/`). The build generates the page, its metadata and the sitemap entry. To give it an illustrated cover before screenshots exist, set `visual` to `'erp'`, `'exam'`, `'store'`, `'football'` or `'finance'` (or add a new schematic in `src/components/ProjectVisual.tsx`).
 
 ## Project structure
 

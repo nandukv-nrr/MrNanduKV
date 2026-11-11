@@ -52,7 +52,6 @@ export const profile: Profile = {
   ],
   socials: [
     { label: 'GitHub', url: 'https://github.com/nandukv-nrr', kind: 'github' },
-    // TODO: paste your LinkedIn profile URL — the link stays hidden while this is empty.
-    { label: 'LinkedIn', url: '', kind: 'linkedin' },
+    { label: 'LinkedIn', url: 'https://www.linkedin.com/in/nandukv', kind: 'linkedin' },
   ],
 }

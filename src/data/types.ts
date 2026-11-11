@@ -56,14 +56,20 @@ export interface Screenshot {
   caption?: string
 }
 
-export type ProjectVisual = 'exam' | 'erp'
+export type ProjectVisual = 'exam' | 'erp' | 'store' | 'football' | 'finance'
+
+/** 'work' = client / employer projects, 'personal' = side projects. */
+export type ProjectGroup = 'work' | 'personal'
 
 export interface Project {
   slug: string
+  group: ProjectGroup
   index: string
   name: string
   shortName: string
   category: string
+  /** Optional short label on the card, e.g. 'Live' or 'In progress'. */
+  status?: string
   tagline: string
   description: string
   overview: string[]
@@ -76,6 +82,7 @@ export interface Project {
   }
   role: string
   contributions: { area: string; items: string[] }[]
+  /** Leave empty ([]) until known — the stack block is then not rendered. */
   stack: { group: string; items: string[] }[]
   features: { title: string; body: string }[]
   process: { title: string; body: string }[]

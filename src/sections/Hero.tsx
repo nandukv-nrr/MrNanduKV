@@ -2,6 +2,7 @@ import { ArrowDownRight } from 'lucide-react'
 import { lazy, Suspense, useCallback, useEffect, useState, type CSSProperties } from 'react'
 import { Magnetic, Split } from '../components/primitives'
 import { profile } from '../data/profile'
+import { sections, sectionIndex } from '../data/sections'
 import { useTheme } from '../hooks/theme'
 import { TLink } from '../hooks/transition'
 
@@ -16,13 +17,7 @@ function supportsWebGL(): boolean {
   }
 }
 
-const QUICK_LINKS = [
-  { id: 'about', label: 'About' },
-  { id: 'work', label: 'Work' },
-  { id: 'experience', label: 'Experience' },
-  { id: 'skills', label: 'Skills' },
-  { id: 'contact', label: 'Contact' },
-]
+const QUICK_LINKS = sections.filter((s) => s.id !== 'education')
 
 export function Hero() {
   const { theme } = useTheme()
@@ -84,9 +79,9 @@ export function Hero() {
 
       <div className="hero__foot container" data-reveal="fade" style={{ '--d': '800ms' } as CSSProperties}>
         <nav className="hero__index" aria-label="Sections">
-          {QUICK_LINKS.map((link, i) => (
+          {QUICK_LINKS.map((link) => (
             <TLink key={link.id} to={`/#${link.id}`} className="hero__index-link mono">
-              <span className="accent">0{i + 1}</span> {link.label}
+              <span className="accent">{sectionIndex(link.id)}</span> {link.label}
             </TLink>
           ))}
         </nav>

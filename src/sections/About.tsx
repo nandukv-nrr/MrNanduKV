@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { sectionIndex } from '../data/sections'
 import { SectionHead, Split } from '../components/primitives'
 import { profile } from '../data/profile'
 
@@ -12,7 +13,7 @@ export function About() {
   return (
     <section className="section about" id="about" aria-labelledby="about-title">
       <div className="container">
-        <SectionHead index="01" label="About">
+        <SectionHead index={sectionIndex('about')} label="About">
           <span id="about-title">
             <Split text="Clarity for" /> <span className="serif accent"><Split text="complex" offset={2} /></span>{' '}
             <Split text="software." offset={3} />

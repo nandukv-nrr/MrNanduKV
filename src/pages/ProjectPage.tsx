@@ -3,7 +3,7 @@ import type { CSSProperties, ReactNode } from 'react'
 import { useParams } from 'react-router-dom'
 import { Magnetic, Split, Tilt } from '../components/primitives'
 import { ProjectVisual } from '../components/ProjectVisual'
-import { projectPath, projects } from '../data/projects'
+import { projectPath, projects, projectSection } from '../data/projects'
 import { site } from '../data/site'
 import type { Project } from '../data/types'
 import { TLink } from '../hooks/transition'
@@ -68,12 +68,14 @@ function CaseStudy({ project }: { project: Project }) {
 
   let n = 0
   const idx = () => String(++n).padStart(2, '0')
+  const backTo = `/#${projectSection(project)}`
+  const allStack = project.stack.flatMap((g) => g.items)
 
   return (
     <main id="main" className="page cs">
       <header className="cs-hero">
         <div className="container">
-          <TLink to="/#work" className="cs-back mono" data-reveal="fade">
+          <TLink to={backTo} className="cs-back mono" data-reveal="fade">
             <ArrowLeft aria-hidden="true" /> All projects
           </TLink>
 
@@ -97,15 +99,12 @@ function CaseStudy({ project }: { project: Project }) {
               <dt className="mono">Category</dt>
               <dd>{project.category}</dd>
             </div>
-            <div>
-              <dt className="mono">Stack</dt>
-              <dd>
-                {project.stack
-                  .flatMap((g) => g.items)
-                  .slice(0, 4)
-                  .join(' · ')}
-              </dd>
-            </div>
+            {allStack.length > 0 && (
+              <div>
+                <dt className="mono">Stack</dt>
+                <dd>{allStack.slice(0, 4).join(' · ')}</dd>
+              </div>
+            )}
           </dl>
         </div>
 
@@ -189,20 +188,22 @@ function CaseStudy({ project }: { project: Project }) {
         </div>
       </Block>
 
-      <Block index={idx()} label="Technology stack">
-        <div className="cs-stack">
-          {project.stack.map((group, k) => (
-            <div key={group.group} className="cs-stack__group" data-reveal="fade" style={{ '--d': `${k * 80}ms` } as CSSProperties}>
-              <h3 className="mono">{group.group}</h3>
-              <ul>
-                {group.items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </Block>
+      {project.stack.length > 0 && (
+        <Block index={idx()} label="Technology stack">
+          <div className="cs-stack">
+            {project.stack.map((group, k) => (
+              <div key={group.group} className="cs-stack__group" data-reveal="fade" style={{ '--d': `${k * 80}ms` } as CSSProperties}>
+                <h3 className="mono">{group.group}</h3>
+                <ul>
+                  {group.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </Block>
+      )}
 
       {project.features.length > 0 && (
         <Block index={idx()} label="Features & functionality">
@@ -311,7 +312,7 @@ function CaseStudy({ project }: { project: Project }) {
             </div>
           )}
 
-          <TLink to="/#work" className="cs-back cs-back--bottom mono">
+          <TLink to={backTo} className="cs-back cs-back--bottom mono">
             <ArrowLeft aria-hidden="true" /> Back to all projects
           </TLink>
         </div>
