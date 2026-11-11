@@ -2,18 +2,13 @@ import { Menu, Moon, Sun, X } from 'lucide-react'
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { useLocation } from 'react-router-dom'
 import { profile } from '../data/profile'
+import { projects, projectSection } from '../data/projects'
+import { sections, sectionIndex } from '../data/sections'
 import { useTheme } from '../hooks/theme'
 import { TLink } from '../hooks/transition'
 import { lockScroll } from '../lib/scroll'
 
-const LINKS = [
-  { id: 'about', label: 'About' },
-  { id: 'work', label: 'Work' },
-  { id: 'experience', label: 'Experience' },
-  { id: 'skills', label: 'Skills' },
-  { id: 'education', label: 'Education' },
-  { id: 'contact', label: 'Contact' },
-]
+const LINKS = sections
 
 function ThemeToggle() {
   const { theme, toggle } = useTheme()
@@ -55,20 +50,22 @@ export function Nav() {
   // Scroll-spy: highlight the section crossing the middle of the viewport.
   useEffect(() => {
     if (!onHome) {
-      setActive('work')
+      // On a case study, highlight the section that lists the project.
+      const project = projects.find((p) => pathname.startsWith(`/projects/${p.slug}`))
+      setActive(project ? projectSection(project) : '')
       return
     }
     setActive('')
-    const sections = LINKS.map((l) => document.getElementById(l.id)).filter((el): el is HTMLElement => !!el)
+    const targets = LINKS.map((l) => document.getElementById(l.id)).filter((el): el is HTMLElement => !!el)
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) if (entry.isIntersecting) setActive(entry.target.id)
       },
       { rootMargin: '-45% 0px -50% 0px' },
     )
-    sections.forEach((s) => io.observe(s))
+    targets.forEach((s) => io.observe(s))
     return () => io.disconnect()
-  }, [onHome])
+  }, [onHome, pathname])
 
   useEffect(() => {
     lockScroll(open)
@@ -139,7 +136,7 @@ export function Nav() {
               style={{ '--i': i } as CSSProperties}
               onClick={() => setOpen(false)}
             >
-              <span className="mono">0{i + 1}</span>
+              <span className="mono">{sectionIndex(link.id)}</span>
               <span>{link.label}</span>
             </TLink>
           ))}

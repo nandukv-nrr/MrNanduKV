@@ -1,21 +1,22 @@
 import { ArrowUpRight } from 'lucide-react'
+import { sectionIndex } from '../data/sections'
 import { SectionHead, Split, Tilt } from '../components/primitives'
 import { ProjectVisual } from '../components/ProjectVisual'
-import { projectPath, projects } from '../data/projects'
+import { projectPath, workProjects } from '../data/projects'
 import { TLink } from '../hooks/transition'
 
 export function Work() {
   return (
     <section className="section work" id="work" aria-labelledby="work-title">
       <div className="container">
-        <SectionHead index="02" label="Featured projects">
+        <SectionHead index={sectionIndex('work')} label="Featured projects">
           <span id="work-title">
             <Split text="Selected" /> <span className="serif accent"><Split text="work." offset={1} /></span>
           </span>
         </SectionHead>
 
         <ol className="work__list">
-          {projects.map((project) => (
+          {workProjects.map((project) => (
             <li key={project.slug} className="work-card">
               <TLink
                 to={projectPath(project.slug)}

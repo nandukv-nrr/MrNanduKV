@@ -2,6 +2,7 @@ import { ArrowUpRight, Mail, MapPin, Phone } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { GithubIcon, LinkedinIcon, Magnetic, Split } from '../components/primitives'
 import { profile } from '../data/profile'
+import { sectionIndex } from '../data/sections'
 
 /**
  * GitHub Pages has no backend, so the form composes an email in the visitor's
@@ -70,7 +71,7 @@ export function Contact() {
     <section className="section contact" id="contact" aria-labelledby="contact-title">
       <div className="container">
         <div className="section-head__bar mono">
-          <span className="section-head__index">06</span>
+          <span className="section-head__index">{sectionIndex('contact')}</span>
           <span>Contact</span>
           <span className="rule" data-reveal="line" aria-hidden="true" />
         </div>

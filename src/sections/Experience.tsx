@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { sectionIndex } from '../data/sections'
 import { SectionHead, Split } from '../components/primitives'
 import { experience } from '../data/experience'
 
@@ -6,7 +7,7 @@ export function Experience() {
   return (
     <section className="section xp" id="experience" aria-labelledby="xp-title">
       <div className="container">
-        <SectionHead index="03" label="Experience">
+        <SectionHead index={sectionIndex('experience')} label="Experience">
           <span id="xp-title">
             <Split text="Where the" /> <span className="serif accent"><Split text="work" offset={2} /></span>{' '}
             <Split text="happens." offset={3} />
