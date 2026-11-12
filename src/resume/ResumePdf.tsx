@@ -1,5 +1,5 @@
 import { Document, Font, Link, Page, pdf, StyleSheet, Text, View } from '@react-pdf/renderer'
-import { INK, TEMPLATES } from './templates'
+import { INK, resolveSpec } from './templates'
 import type { ResumeData } from './types'
 import { buildView, type ResumeView, type ViewSection } from './view'
 
@@ -13,7 +13,7 @@ const FONTS = {
 }
 
 function ResumeDocument({ data, view }: { data: ResumeData; view: ResumeView }) {
-  const spec = TEMPLATES[data.settings.template]
+  const spec = resolveSpec(data.settings)
   const font = FONTS[spec.font]
   const color = { accent: data.settings.accent, text: INK.text, muted: INK.muted }
   const center = spec.headerAlign === 'center'
@@ -61,6 +61,13 @@ function ResumeDocument({ data, view }: { data: ResumeData; view: ResumeView }) 
             {row.label ? <Text style={s.bold}>{row.label}: </Text> : null}
             {row.value}
           </Text>
+        ))}
+      {section.kind === 'bullets' &&
+        section.items.map((b, k) => (
+          <View key={k} style={s.bullet} wrap={false}>
+            <Text style={s.dot}>•</Text>
+            <Text style={s.grow}>{b}</Text>
+          </View>
         ))}
       {section.kind === 'entries' &&
         section.entries.map((entry, i) => (

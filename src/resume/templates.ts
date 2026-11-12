@@ -1,4 +1,4 @@
-import type { PageSize, TemplateId } from './types.ts'
+import type { PageSize, ResumeSettings, TemplateId } from './types.ts'
 
 /**
  * Every template is single-column with standard headings, real text and no
@@ -100,6 +100,26 @@ export const TEMPLATES: Record<TemplateId, TemplateSpec> = {
     sectionGap: 15,
     entryGap: 8,
   },
+}
+
+const TEXT = { small: 0.93, normal: 1, large: 1.08 }
+const SPACE = { small: 0.75, normal: 1, large: 1.3 }
+
+/** The chosen template with the visitor's text-size and spacing adjustments applied. */
+export function resolveSpec(settings: ResumeSettings): TemplateSpec {
+  const spec = TEMPLATES[settings.template]
+  const t = TEXT[settings.textSize]
+  const g = SPACE[settings.spacing]
+  const r = (n: number) => Math.round(n * 100) / 100
+  return {
+    ...spec,
+    base: r(spec.base * t),
+    nameSize: r(spec.nameSize * t),
+    headingSize: r(spec.headingSize * t),
+    sectionGap: r(spec.sectionGap * g),
+    entryGap: r(spec.entryGap * g),
+    lineHeight: r(spec.lineHeight * (1 + (g - 1) * 0.25)),
+  }
 }
 
 export const TEMPLATE_LIST = Object.values(TEMPLATES)

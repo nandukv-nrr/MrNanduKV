@@ -457,6 +457,309 @@
   color: var(--accent);
 }
 
+/* Field pieces shared by the richer inputs */
+.rb .field__label {
+  font-size: 0.9rem;
+  font-weight: 550;
+}
+.rb .field select {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0 2.25rem 0 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg);
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 1.1rem) 50%,
+    calc(100% - 0.8rem) 50%;
+  background-size: 0.3rem 0.3rem;
+  background-repeat: no-repeat;
+  color: var(--text);
+  font: inherit;
+  appearance: none;
+  transition:
+    border-color 0.25s,
+    box-shadow 0.25s;
+}
+.rb .field select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.rb-monthyear {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 0.4rem;
+}
+.rb-monthyear select {
+  padding-left: 0.7rem !important;
+}
+.rb-fixed {
+  display: flex;
+  align-items: center;
+  min-height: 3rem;
+  padding: 0 1rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+}
+
+/* Type-ahead */
+.rb-combo {
+  position: relative;
+}
+.rb-suggest {
+  position: absolute;
+  inset: calc(100% + 4px) 0 auto 0;
+  z-index: 40;
+  max-height: 15rem;
+  overflow-y: auto;
+  padding: 0.3rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  box-shadow: var(--shadow);
+}
+.rb-suggest li {
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.rb-suggest li[aria-selected='true'] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* Skill tags */
+.rb-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 3rem;
+  padding: 0.45rem 0.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  cursor: text;
+  transition:
+    border-color 0.25s,
+    box-shadow 0.25s;
+}
+.rb-tags:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.rb .field .rb-tags input {
+  flex: 1;
+  width: auto;
+  min-width: 9rem;
+  min-height: 2rem;
+  padding: 0 0.4rem;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.rb-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding-left: 0.7rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  border: 1px solid var(--line);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.rb-tag button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: var(--muted);
+}
+.rb-tag button:hover {
+  color: var(--text);
+}
+.rb-tag svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+.rb-ideas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+.rb-ideas .mono {
+  margin-right: 0.25rem;
+}
+.rb-idea {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 32px;
+  padding: 0 0.7rem 0 0.5rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    background-color 0.2s;
+}
+.rb-idea svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+.rb-idea:hover {
+  border-style: solid;
+  border-color: var(--accent);
+  color: var(--text);
+  background: var(--accent-soft);
+}
+
+/* Bullet editor */
+.rb-bullets {
+  display: grid;
+  gap: 0.4rem;
+}
+.rb-bullets li {
+  display: grid;
+  grid-template-columns: 0.9rem minmax(0, 1fr) 40px;
+  align-items: start;
+  gap: 0.3rem;
+}
+.rb-bullets li > span {
+  padding-top: 0.7rem;
+  color: var(--accent);
+  text-align: center;
+}
+.rb .field .rb-bullets textarea {
+  min-height: 2.75rem;
+  padding: 0.6rem 0.8rem;
+  resize: none;
+  field-sizing: content;
+  line-height: 1.4;
+}
+.rb-add--small {
+  justify-self: start;
+  min-height: 38px;
+  padding: 0 0.9rem;
+  font-size: 0.9rem;
+}
+
+/* Resume strength */
+.rb-strength {
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+.rb-strength__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem clamp(1rem, 2vw, 1.5rem) 0.75rem;
+  text-align: left;
+}
+.rb-strength__head > span:first-child {
+  display: grid;
+  gap: 0.2rem;
+}
+.rb-strength__head strong {
+  font-size: 1.6rem;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  font-weight: 600;
+}
+.rb-strength__head em {
+  margin-left: 0.4rem;
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--accent);
+}
+.rb-strength__count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.92rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.rb-strength__count svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  transition: transform 0.3s var(--ease-out);
+}
+.rb-strength__head[aria-expanded='true'] svg {
+  transform: rotate(180deg);
+}
+.rb-meter {
+  height: 6px;
+  margin: 0 clamp(1rem, 2vw, 1.5rem) 1rem;
+  border-radius: 3px;
+  background: var(--line);
+  overflow: hidden;
+}
+.rb-meter i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 0.5s var(--ease-out);
+}
+.rb-checks {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem clamp(1rem, 2vw, 1.5rem) 1.25rem;
+  border-top: 1px solid var(--line);
+}
+.rb-checks li {
+  display: grid;
+  grid-template-columns: 1.25rem 1fr;
+  gap: 0.7rem;
+  font-size: 0.95rem;
+}
+.rb-checks strong {
+  font-weight: 550;
+}
+.rb-checks li.is-ok strong {
+  font-weight: 400;
+  color: var(--muted);
+}
+.rb-checks__mark {
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.1rem;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 50%;
+}
+.rb-checks li.is-ok .rb-checks__mark {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.rb-checks__mark svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+.rb-checks__tip {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--muted);
+}
+
 /* Preview side */
 .rb-side__sticky {
   display: grid;

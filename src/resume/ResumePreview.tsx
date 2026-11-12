@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
-import { INK, PAGE, TEMPLATES } from './templates'
+import { INK, PAGE, resolveSpec } from './templates'
 import type { ResumeData } from './types'
 import { buildView, type ViewSection } from './view'
 
@@ -17,6 +17,13 @@ function Section({ section }: { section: ViewSection }) {
             {row.value}
           </p>
         ))}
+      {section.kind === 'bullets' && (
+        <ul className="rp-bullets">
+          {section.items.map((b, k) => (
+            <li key={k}>{b}</li>
+          ))}
+        </ul>
+      )}
       {section.kind === 'entries' &&
         section.entries.map((entry, i) => (
           <div key={i} className="rp-entry">
@@ -50,7 +57,7 @@ function Section({ section }: { section: ViewSection }) {
  */
 export function ResumePreview({ data, onOverflow }: { data: ResumeData; onOverflow?: (over: boolean) => void }) {
   const view = buildView(data)
-  const spec = TEMPLATES[data.settings.template]
+  const spec = resolveSpec(data.settings)
   const page = PAGE[data.settings.pageSize]
   const frame = useRef<HTMLDivElement>(null)
   const sheet = useRef<HTMLDivElement>(null)

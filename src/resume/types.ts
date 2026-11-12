@@ -1,7 +1,9 @@
-export type SectionId = 'summary' | 'experience' | 'education' | 'skills' | 'projects' | 'certifications' | 'languages'
+export type SectionId = 'summary' | 'experience' | 'education' | 'skills' | 'projects' | 'certifications' | 'languages' | 'custom'
 
 export type TemplateId = 'modern' | 'classic' | 'compact' | 'minimal'
 export type PageSize = 'A4' | 'LETTER'
+/** Three-step fine-tuning for text size and spacing. */
+export type Scale = 'small' | 'normal' | 'large'
 
 export interface Personal {
   fullName: string
@@ -69,6 +71,8 @@ export interface ResumeSettings {
   template: TemplateId
   accent: string
   pageSize: PageSize
+  textSize: Scale
+  spacing: Scale
 }
 
 export interface ResumeData {
@@ -80,6 +84,8 @@ export interface ResumeData {
   projects: ProjectItem[]
   certifications: CertificationItem[]
   languages: LanguageItem[]
+  /** A free section the visitor names themselves (awards, volunteering, …). One line per item. */
+  custom: { title: string; lines: string }
   sectionOrder: SectionId[]
   hidden: SectionId[]
   settings: ResumeSettings

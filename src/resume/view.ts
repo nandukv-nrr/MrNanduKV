@@ -19,6 +19,7 @@ export type ViewSection =
   | { id: SectionId; heading: string; kind: 'text'; text: string }
   | { id: SectionId; heading: string; kind: 'entries'; entries: ViewEntry[] }
   | { id: SectionId; heading: string; kind: 'rows'; rows: { label: string; value: string }[] }
+  | { id: SectionId; heading: string; kind: 'bullets'; items: string[] }
 
 export interface ResumeView {
   name: string
@@ -36,6 +37,7 @@ export const SECTION_LABELS: Record<SectionId, string> = {
   projects: 'Projects',
   certifications: 'Certifications',
   languages: 'Languages',
+  custom: 'Additional Information',
 }
 
 const t = (s: string) => s.trim()
@@ -112,6 +114,10 @@ export function buildView(data: ResumeData): ResumeView {
       return items.length
         ? { id: 'languages', heading: SECTION_LABELS.languages, kind: 'rows', rows: [{ label: '', value: items.join(', ') }] }
         : null
+    },
+    custom: () => {
+      const items = lines(data.custom.lines)
+      return items.length ? { id: 'custom', heading: t(data.custom.title) || SECTION_LABELS.custom, kind: 'bullets', items } : null
     },
   }
 

@@ -4,7 +4,7 @@ import type { ResumeData, SectionId } from './types.ts'
 
 const STORAGE_KEY = 'resume-builder:v1'
 
-export const ALL_SECTIONS: SectionId[] = ['summary', 'experience', 'education', 'skills', 'projects', 'certifications', 'languages']
+export const ALL_SECTIONS: SectionId[] = ['summary', 'experience', 'education', 'skills', 'projects', 'certifications', 'languages', 'custom']
 
 export const newId = () =>
   typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : Math.random().toString(36).slice(2)
@@ -19,9 +19,10 @@ export function emptyResume(): ResumeData {
     projects: [],
     certifications: [],
     languages: [],
+    custom: { title: '', lines: '' },
     sectionOrder: [...ALL_SECTIONS],
     hidden: [],
-    settings: { template: 'modern', accent: ACCENTS[0].value, pageSize: 'A4' },
+    settings: { template: 'modern', accent: ACCENTS[0].value, pageSize: 'A4', textSize: 'normal', spacing: 'normal' },
   }
 }
 
@@ -41,6 +42,8 @@ export function normalize(raw: unknown): ResumeData {
   const order = Array.isArray(r.sectionOrder) ? (r.sectionOrder.filter((x) => ALL_SECTIONS.includes(x)) as SectionId[]) : []
   const template = str(s.template)
   const accent = str(s.accent)
+  const scale = (v: unknown) => (v === 'small' || v === 'large' ? v : 'normal')
+  const c = obj(r.custom)
   return {
     personal: {
       fullName: str(p.fullName),
@@ -82,6 +85,7 @@ export function normalize(raw: unknown): ResumeData {
     })),
     certifications: list(r.certifications, (o) => ({ id: str(o.id) || newId(), name: str(o.name), issuer: str(o.issuer), year: str(o.year) })),
     languages: list(r.languages, (o) => ({ id: str(o.id) || newId(), name: str(o.name), level: str(o.level) })),
+    custom: { title: str(c.title), lines: str(c.lines) },
     // Keep the saved order, then append any section it does not mention.
     sectionOrder: [...new Set([...order, ...ALL_SECTIONS])],
     hidden: Array.isArray(r.hidden) ? (r.hidden.filter((x) => ALL_SECTIONS.includes(x)) as SectionId[]) : [],
@@ -89,6 +93,8 @@ export function normalize(raw: unknown): ResumeData {
       template: template in TEMPLATES ? (template as ResumeData['settings']['template']) : base.settings.template,
       accent: /^#[0-9a-f]{6}$/i.test(accent) ? accent : base.settings.accent,
       pageSize: s.pageSize === 'LETTER' ? 'LETTER' : 'A4',
+      textSize: scale(s.textSize),
+      spacing: scale(s.spacing),
     },
   }
 }
