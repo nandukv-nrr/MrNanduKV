@@ -88,6 +88,9 @@ A free tool at `/resume-builder/` where any visitor can fill in a form, pick a t
 | `src/resume/ResumePreview.tsx` | The on-screen preview |
 | `src/resume/ResumePdf.tsx` | The PDF (built with `@react-pdf/renderer`, loaded only on download) |
 | `src/resume/ResumeForm.tsx` | The form and its validation |
+| `src/resume/inputs.tsx` | Form controls: type-ahead box, skill tags, month / year pickers, bullet editor |
+| `src/resume/suggestions.ts` | Suggestion lists: skills, skill groups, job titles, degrees, languages, levels |
+| `src/resume/strength.ts` | The "Resume strength" checklist and its scoring |
 | `src/resume/sample.ts` | The "Fill with example" data (a made-up person) |
 | `src/data/pages.ts` | The page's title, description and URL |
 

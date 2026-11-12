@@ -1,6 +1,8 @@
 import { ArrowDown, ArrowUp, ChevronDown, Eye, EyeOff, Plus, Trash2 } from 'lucide-react'
 import { useId, useState, type ReactNode } from 'react'
+import { Bullets, Combo, describedBy, FieldShell, MonthYear, Select, TagInput } from './inputs'
 import { newId } from './store'
+import { ALL_SKILLS, DEGREES, JOB_TITLES, LANGUAGES, LEVELS, SKILL_GROUP_NAMES, skillIdeas } from './suggestions'
 import type { ResumeData, SectionId } from './types'
 import { SECTION_LABELS } from './view'
 
@@ -37,33 +39,22 @@ interface FieldProps {
 
 function Field({ label, value, onChange, type = 'text', placeholder, hint, error, rows, autoComplete, wide, disabled }: FieldProps) {
   const id = useId()
-  const describedBy = error ? `${id}-e` : hint ? `${id}-h` : undefined
   const shared = {
     id,
     value,
     placeholder,
     disabled,
     'aria-invalid': error ? true : undefined,
-    'aria-describedby': describedBy,
+    'aria-describedby': describedBy(id, hint, error),
   }
   return (
-    <div className={`field${wide ? ' field--wide' : ''}`}>
-      <label htmlFor={id}>{label}</label>
+    <FieldShell id={id} label={label} hint={hint} error={error} wide={wide}>
       {rows ? (
         <textarea {...shared} rows={rows} onChange={(e) => onChange(e.target.value)} />
       ) : (
         <input {...shared} type={type} autoComplete={autoComplete ?? 'off'} onChange={(e) => onChange(e.target.value)} />
       )}
-      {error ? (
-        <p id={`${id}-e`} className="field__error" role="alert">
-          {error}
-        </p>
-      ) : hint ? (
-        <p id={`${id}-h`} className="field__hint">
-          {hint}
-        </p>
-      ) : null}
-    </div>
+    </FieldShell>
   )
 }
 
@@ -205,7 +196,7 @@ export function ResumeForm({ data, update, errors }: { data: ResumeData; update:
         wide
         value={data.summary}
         onChange={(summary) => update({ summary })}
-        hint="2–4 sentences: who you are, your experience and what you do best."
+        hint={`2–4 sentences: who you are, your experience and what you do best. ${data.summary.trim().length} characters — aim for 150–700.`}
       />
     ),
     experience: (
@@ -217,23 +208,22 @@ export function ResumeForm({ data, update, errors }: { data: ResumeData; update:
       >
         {(item, set) => (
           <>
-            <Field label="Job title" value={item.role} onChange={(role) => set({ role })} placeholder="Frontend Developer" />
+            <Combo label="Job title" value={item.role} onChange={(role) => set({ role })} options={JOB_TITLES} placeholder="Frontend Developer" />
             <Field label="Company" value={item.company} onChange={(company) => set({ company })} />
             <Field label="Location" value={item.location} onChange={(location) => set({ location })} placeholder="City, Country" />
             <div className="rb-dates">
-              <Field label="Start" value={item.start} onChange={(start) => set({ start })} placeholder="Jan 2022" />
-              <Field label="End" value={item.current ? 'Present' : item.end} onChange={(end) => set({ end })} placeholder="Dec 2024" disabled={item.current} />
+              <MonthYear label="Start" value={item.start} onChange={(start) => set({ start })} />
+              <MonthYear label="End" value={item.end} onChange={(end) => set({ end })} fixed={item.current ? 'Present' : undefined} />
             </div>
             <label className="rb-check field--wide">
               <input type="checkbox" checked={item.current} onChange={(e) => set({ current: e.target.checked })} />I currently work here
             </label>
-            <Field
-              label="What you did"
-              rows={5}
-              wide
+            <Bullets
+              label="What you achieved"
               value={item.bullets}
               onChange={(bullets) => set({ bullets })}
-              hint="One achievement per line. Start with a verb and add a number where you can."
+              placeholder="Built a dashboard used by 3,000 people every day"
+              hint="Press Enter for the next point. Start with a verb and add a number where you can."
             />
           </>
         )}
@@ -248,12 +238,12 @@ export function ResumeForm({ data, update, errors }: { data: ResumeData; update:
       >
         {(item, set) => (
           <>
-            <Field label="Degree or course" value={item.degree} onChange={(degree) => set({ degree })} placeholder="B.Tech in Computer Science" />
+            <Combo label="Degree or course" value={item.degree} onChange={(degree) => set({ degree })} options={DEGREES} placeholder="B.Tech in Computer Science" />
             <Field label="School or university" value={item.school} onChange={(school) => set({ school })} />
             <Field label="Location" value={item.location} onChange={(location) => set({ location })} placeholder="City, Country" />
             <div className="rb-dates">
-              <Field label="Start" value={item.start} onChange={(start) => set({ start })} placeholder="2018" />
-              <Field label="End" value={item.end} onChange={(end) => set({ end })} placeholder="2022" />
+              <MonthYear label="Start" value={item.start} onChange={(start) => set({ start })} />
+              <MonthYear label="End" value={item.end} onChange={(end) => set({ end })} />
             </div>
             <Field label="Details (optional)" wide value={item.details} onChange={(details) => set({ details })} placeholder="Grade, honours, relevant coursework" />
           </>
@@ -264,8 +254,23 @@ export function ResumeForm({ data, update, errors }: { data: ResumeData; update:
       <Items items={data.skills} onChange={(skills) => update({ skills })} noun="skill group" blank={() => ({ category: '', items: '' })}>
         {(item, set) => (
           <>
-            <Field label="Group name" value={item.category} onChange={(category) => set({ category })} placeholder="Languages" />
-            <Field label="Skills" value={item.items} onChange={(items) => set({ items })} placeholder="JavaScript, TypeScript, HTML" hint="Separate with commas." />
+            <Combo
+              label="Group name"
+              wide
+              value={item.category}
+              onChange={(category) => set({ category })}
+              options={SKILL_GROUP_NAMES}
+              placeholder="Languages, Frameworks, Tools…"
+            />
+            <TagInput
+              label="Skills"
+              value={item.items}
+              onChange={(items) => set({ items })}
+              options={ALL_SKILLS}
+              ideas={skillIdeas(item.category, p.title)}
+              placeholder="Start typing — e.g. React"
+              hint="Type and press Enter or comma to add. Suggestions appear as you type."
+            />
           </>
         )}
       </Items>
@@ -277,7 +282,7 @@ export function ResumeForm({ data, update, errors }: { data: ResumeData; update:
             <Field label="Project name" value={item.name} onChange={(name) => set({ name })} />
             <Field label="Link (optional)" value={item.link} onChange={(link) => set({ link })} placeholder="github.com/you/project" />
             <Field label="Short description" wide value={item.description} onChange={(description) => set({ description })} />
-            <Field label="Highlights (optional)" rows={3} wide value={item.bullets} onChange={(bullets) => set({ bullets })} hint="One per line." />
+            <Bullets label="Highlights (optional)" value={item.bullets} onChange={(bullets) => set({ bullets })} hint="Press Enter for the next point." />
           </>
         )}
       </Items>
@@ -302,20 +307,40 @@ export function ResumeForm({ data, update, errors }: { data: ResumeData; update:
       <Items items={data.languages} onChange={(languages) => update({ languages })} noun="language" blank={() => ({ name: '', level: '' })}>
         {(item, set) => (
           <>
-            <Field label="Language" value={item.name} onChange={(name) => set({ name })} />
-            <Field label="Level" value={item.level} onChange={(level) => set({ level })} placeholder="Fluent" />
+            <Combo label="Language" value={item.name} onChange={(name) => set({ name })} options={LANGUAGES} placeholder="Start typing — e.g. English" />
+            <Select label="Level" value={item.level} onChange={(level) => set({ level })} options={LEVELS} placeholder="Choose level…" />
           </>
         )}
       </Items>
     ),
+    custom: (
+      <div className="rb-grid">
+        <Field
+          label="Section heading"
+          wide
+          value={data.custom.title}
+          onChange={(title) => update({ custom: { ...data.custom, title } })}
+          placeholder="Awards, Volunteering, Publications…"
+        />
+        <Bullets
+          label="Items"
+          value={data.custom.lines}
+          onChange={(lines) => update({ custom: { ...data.custom, lines } })}
+          addLabel="Add item"
+          hint="Press Enter for the next item."
+        />
+      </div>
+    ),
   }
+
+  const panelTitle = (id: SectionId) => (id === 'custom' ? data.custom.title.trim() || 'Custom section' : SECTION_LABELS[id])
 
   return (
     <form className="rb-form" noValidate onSubmit={(e) => e.preventDefault()}>
       <Panel title="Personal details" open={open.has('personal')} onToggle={() => toggle('personal')}>
         <div className="rb-grid">
           <Field label="Full name" value={p.fullName} onChange={(fullName) => setPersonal({ fullName })} autoComplete="name" error={errors.fullName} />
-          <Field label="Job title" value={p.title} onChange={(title) => setPersonal({ title })} placeholder="Frontend Developer" />
+          <Combo label="Job title" value={p.title} onChange={(title) => setPersonal({ title })} options={JOB_TITLES} placeholder="Frontend Developer" />
           <Field
             label="Email"
             type="email"
@@ -335,7 +360,7 @@ export function ResumeForm({ data, update, errors }: { data: ResumeData; update:
       {data.sectionOrder.map((id, i) => (
         <Panel
           key={id}
-          title={SECTION_LABELS[id]}
+          title={panelTitle(id)}
           open={open.has(id)}
           onToggle={() => toggle(id)}
           section={{

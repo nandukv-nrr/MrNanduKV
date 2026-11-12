@@ -1,4 +1,4 @@
-import { Download, FileDown, FileUp, Lock, RotateCcw, Sparkles } from 'lucide-react'
+import { Check, ChevronDown, Download, FileDown, FileUp, Lock, RotateCcw, Sparkles } from 'lucide-react'
 import { useCallback, useRef, useState, type ChangeEvent } from 'react'
 import { resumeBuilderPage } from '../data/pages'
 import { useSeo } from '../hooks/useSeo'
@@ -7,9 +7,83 @@ import { ResumePreview } from '../resume/ResumePreview'
 import { sampleResume } from '../resume/sample'
 import { emptyResume, isEmpty, normalize, useResume } from '../resume/store'
 import { ACCENTS, PAGE, TEMPLATE_LIST, TEMPLATES, usesAccent } from '../resume/templates'
-import type { PageSize, ResumeData } from '../resume/types'
+import { resumeStrength } from '../resume/strength'
+import type { PageSize, ResumeData, Scale } from '../resume/types'
 import { resumeFileName } from '../resume/view'
 import '../styles/resume.css'
+
+const SCALES: { value: Scale; label: string }[] = [
+  { value: 'small', label: 'Small' },
+  { value: 'normal', label: 'Normal' },
+  { value: 'large', label: 'Large' },
+]
+const SPACINGS: { value: Scale; label: string }[] = [
+  { value: 'small', label: 'Tight' },
+  { value: 'normal', label: 'Normal' },
+  { value: 'large', label: 'Relaxed' },
+]
+
+/** A small radio-style switch between a few options. */
+function Segment<T extends string>({ title, value, options, onChange }: { title: string; value: T; options: { value: T; label: string }[]; onChange: (v: T) => void }) {
+  const id = `rb-seg-${title.toLowerCase().replace(/\s+/g, '-')}`
+  return (
+    <div>
+      <h3 className="mono" id={id}>
+        {title}
+      </h3>
+      <div className="rb-segment" role="radiogroup" aria-labelledby={id}>
+        {options.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={value === o.value} onClick={() => onChange(o.value)}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/** Score, progress bar and the list of things still to improve. */
+function Strength({ data, overflow }: { data: ResumeData; overflow: boolean }) {
+  const [open, setOpen] = useState(false)
+  const { score, checks } = resumeStrength(data, overflow)
+  const todo = checks.filter((c) => !c.ok)
+  const level = score >= 85 ? 'Strong' : score >= 60 ? 'Good start' : 'Needs work'
+  return (
+    <section className="rb-strength" aria-labelledby="rb-strength-title">
+      <button type="button" className="rb-strength__head" aria-expanded={open} aria-controls="rb-strength-list" onClick={() => setOpen((v) => !v)}>
+        <span>
+          <span id="rb-strength-title" className="mono">
+            Resume strength
+          </span>
+          <strong>
+            {score}% <em>{level}</em>
+          </strong>
+        </span>
+        <span className="rb-strength__count">
+          {todo.length ? `${todo.length} tip${todo.length > 1 ? 's' : ''}` : 'All checks passed'}
+          <ChevronDown aria-hidden="true" />
+        </span>
+      </button>
+      <div className="rb-meter" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={score} aria-label="Resume strength">
+        <i style={{ width: `${score}%` }} />
+      </div>
+      <ul id="rb-strength-list" className="rb-checks" hidden={!open}>
+        {checks.map((c) => (
+          <li key={c.label} className={c.ok ? 'is-ok' : undefined}>
+            <span className="rb-checks__mark" aria-hidden="true">
+              {c.ok && <Check />}
+            </span>
+            <span>
+              <strong>{c.label}</strong>
+              <span className="sr-only">{c.ok ? ' — done' : ' — to do'}</span>
+              {!c.ok && <span className="rb-checks__tip">{c.tip}</span>}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
 
 function saveFile(blob: Blob, name: string) {
   const url = URL.createObjectURL(blob)
@@ -208,26 +282,18 @@ export default function ResumeBuilder() {
                   </div>
                   {!usesAccent(spec) && <p className="field__hint">The {spec.name} template is black and white.</p>}
                 </div>
-                <div>
-                  <h3 className="mono" id="rb-size-title">
-                    Page size
-                  </h3>
-                  <div className="rb-segment" role="radiogroup" aria-labelledby="rb-size-title">
-                    {(Object.keys(PAGE) as PageSize[]).map((size) => (
-                      <button
-                        key={size}
-                        type="button"
-                        role="radio"
-                        aria-checked={data.settings.pageSize === size}
-                        onClick={() => setSettings({ pageSize: size })}
-                      >
-                        {PAGE[size].label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <Segment
+                  title="Page size"
+                  value={data.settings.pageSize}
+                  options={(Object.keys(PAGE) as PageSize[]).map((size) => ({ value: size, label: PAGE[size].label }))}
+                  onChange={(pageSize) => setSettings({ pageSize })}
+                />
+                <Segment title="Text size" value={data.settings.textSize} options={SCALES} onChange={(textSize) => setSettings({ textSize })} />
+                <Segment title="Spacing" value={data.settings.spacing} options={SPACINGS} onChange={(spacing) => setSettings({ spacing })} />
               </div>
             </section>
+
+            <Strength data={data} overflow={overflow} />
 
             <ResumeForm data={data} update={change} errors={errors} />
           </div>
@@ -243,7 +309,7 @@ export default function ResumeBuilder() {
               {overflow && (
                 <p className="rb-note">
                   Your resume runs onto a second page (the dashed line marks the break). One page is best for under ten years of experience — try the
-                  Compact template or trim a few bullet points.
+                  Compact template, smaller text or tighter spacing.
                 </p>
               )}
               <div className="rb-paper" data-lenis-prevent tabIndex={0} role="region" aria-label="Resume preview">
