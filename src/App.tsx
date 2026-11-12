@@ -12,6 +12,7 @@ import Home from './pages/Home'
 // Case-study and 404 pages load on demand.
 const ProjectPage = lazy(() => import('./pages/ProjectPage'))
 const NotFound = lazy(() => import('./pages/NotFound'))
+const ResumeBuilder = lazy(() => import('./pages/ResumeBuilder'))
 
 /** Last-resort boundary so a runtime error never leaves a blank page. */
 class ErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
@@ -77,6 +78,7 @@ function Shell() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/projects/:slug" element={<ProjectPage />} />
+            <Route path="/resume-builder" element={<ResumeBuilder />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

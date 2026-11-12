@@ -2,6 +2,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
+import { staticPages } from './src/data/pages.ts'
 import { profile } from './src/data/profile.ts'
 import { projectPath, projects } from './src/data/projects.ts'
 import { site, siteUrl } from './src/data/site.ts'
@@ -98,6 +99,11 @@ function staticRoutes(): Plugin {
         })
         writeFileSync(resolve(dir, 'index.html'), html)
       }
+      for (const page of staticPages) {
+        const dir = resolve(outDir, page.path.replace(/^\/|\/$/g, ''))
+        mkdirSync(dir, { recursive: true })
+        writeFileSync(resolve(dir, 'index.html'), withSeo(shell, { title: page.title, description: page.description, path: page.path }))
+      }
       writeFileSync(
         resolve(outDir, '404.html'),
         withSeo(shell, {
@@ -107,7 +113,7 @@ function staticRoutes(): Plugin {
           noindex: true,
         }),
       )
-      const urls = ['', ...projects.map((p) => projectPath(p.slug))].map(
+      const urls = ['', ...projects.map((p) => projectPath(p.slug)), ...staticPages.map((p) => p.path)].map(
         (path) => `  <url><loc>${siteUrl(path)}</loc></url>`,
       )
       writeFileSync(

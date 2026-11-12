@@ -1,6 +1,7 @@
-import { Menu, Moon, Sun, X } from 'lucide-react'
+import { FileText, Menu, Moon, Sun, X } from 'lucide-react'
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { useLocation } from 'react-router-dom'
+import { resumeBuilderPage } from '../data/pages'
 import { profile } from '../data/profile'
 import { projects, projectSection } from '../data/projects'
 import { sections, sectionIndex } from '../data/sections'
@@ -110,6 +111,15 @@ export function Nav() {
           </nav>
 
           <div className="nav__tools">
+            <TLink
+              to={resumeBuilderPage.path}
+              className="nav__cta"
+              aria-current={pathname.startsWith('/resume-builder') ? 'page' : undefined}
+              title={resumeBuilderPage.label}
+            >
+              <FileText aria-hidden="true" />
+              <span>{resumeBuilderPage.label}</span>
+            </TLink>
             <ThemeToggle />
             <button
               ref={menuButton}
@@ -140,6 +150,12 @@ export function Nav() {
               <span>{link.label}</span>
             </TLink>
           ))}
+          <TLink to={resumeBuilderPage.path} className="menu__link menu__link--tool" style={{ '--i': LINKS.length } as CSSProperties} onClick={() => setOpen(false)}>
+            <span className="mono">
+              <FileText aria-hidden="true" />
+            </span>
+            <span>{resumeBuilderPage.label}</span>
+          </TLink>
         </nav>
         <div className="menu__foot container mono">
           <a href={`mailto:${profile.email}`}>{profile.email}</a>
