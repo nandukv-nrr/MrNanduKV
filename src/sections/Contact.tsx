@@ -1,6 +1,8 @@
 import { ArrowUpRight, Mail, MapPin, Phone } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { GithubIcon, LinkedinIcon, Magnetic, Split } from '../components/primitives'
+import { TLink } from '../hooks/transition'
+import { resumeBuilderPage } from '../data/pages'
 import { profile } from '../data/profile'
 import { sectionIndex } from '../data/sections'
 
@@ -128,6 +130,19 @@ export function Contact() {
 
           <ContactForm />
         </div>
+
+        <aside className="contact__tool" data-reveal="fade" aria-label={resumeBuilderPage.label}>
+          <div>
+            <p className="mono">
+              <span className="accent">Free tool</span> — no sign-up
+            </p>
+            <h3>Need a resume? Build one here.</h3>
+            <p>Pick a template, fill in your details and download an ATS-friendly PDF. Your data stays in your browser.</p>
+          </div>
+          <TLink to={resumeBuilderPage.path} className="btn">
+            Open {resumeBuilderPage.label} <ArrowUpRight aria-hidden="true" />
+          </TLink>
+        </aside>
       </div>
     </section>
   )

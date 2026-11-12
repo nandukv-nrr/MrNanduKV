@@ -77,6 +77,22 @@ GitHub Pages only serves static files, so the build (see the plugin in `vite.con
 
 Update `origin` and `base` in `src/data/site.ts`. The Vite base path, canonical URLs, sitemap and social metadata all derive from those two values. For a custom domain, set `base` to `'/'` and add a `public/CNAME` file.
 
+## Resume builder
+
+A free tool at `/resume-builder/` where any visitor can fill in a form, pick a template and download an ATS-friendly PDF. Everything runs in the browser: the draft is saved in the visitor's `localStorage` and nothing is uploaded.
+
+| File | What it controls |
+| --- | --- |
+| `src/resume/templates.ts` | The templates (fonts, sizes, spacing), accent colours and page sizes |
+| `src/resume/view.ts` | What gets printed: section headings, date and contact formatting |
+| `src/resume/ResumePreview.tsx` | The on-screen preview |
+| `src/resume/ResumePdf.tsx` | The PDF (built with `@react-pdf/renderer`, loaded only on download) |
+| `src/resume/ResumeForm.tsx` | The form and its validation |
+| `src/resume/sample.ts` | The "Fill with example" data (a made-up person) |
+| `src/data/pages.ts` | The page's title, description and URL |
+
+To add a template, add an entry to `TEMPLATES` in `templates.ts` — the preview, the PDF and the picker all read from it. Keep templates single-column with standard headings, so ATS software can read them. The PDF uses the built-in Helvetica and Times fonts, which cover Latin text; other scripts would need a font registered in `ResumePdf.tsx`.
+
 ## Contact form
 
 GitHub Pages has no backend, so the contact form opens the visitor's email app with the message pre-filled (`mailto:`). To use a form service such as Formspree instead, replace the body of `onSubmit` in `src/sections/Contact.tsx` with a `fetch()` to your endpoint.
